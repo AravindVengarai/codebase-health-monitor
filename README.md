@@ -60,7 +60,12 @@ Improving the output format will make the results more user-friendly and easier 
 - **CSV Export**: Utilize the pandas library to export the results to a CSV file for easier analysis in spreadsheet applications.
 - **Enhanced JSON Output**: Ensure the results are available in a structured JSON format for further processing or integration with other tools.
 
+## Testing
+
+This tool has been tested solely on the Flask repository. Ensure to test it on other repositories to validate its functionality and make necessary adjustments.
 
 ### User Interface
 
 Develop a user-friendly interface to visualize the results. This can be a web dashboard or a desktop application that displays the health metrics in an easily understandable format. Tools: React, Flask, Django, Electron.
+
+
