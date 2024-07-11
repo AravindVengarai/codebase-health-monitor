@@ -1,0 +1,28 @@
+{
+  "queries": {
+    "security_vulnerabilities": {
+      "description": "List any security vulnerabilities found in the codebase, including the specific files and lines where they occur and the line of code. Provide the details as a JSON object with keys 'vulnerabilities', 'file', 'line', 'code', and 'details'."
+    },
+    "bugs": {
+      "description": "Identify any bugs in the codebase. Provide the details as a JSON object with keys 'bugs' and 'count'."
+    },
+    "test_coverage": {
+      "description": "What percentage of the codebase is covered by tests? Provide the test coverage as a single number with two decimal places. Format your response as JSON with a single key 'test_coverage'."
+    },
+    "technical_debt": {
+      "description": "Analyze the technical debt in the codebase. Provide the technical debt as a single number with two decimal places. Format your response as JSON with a single key 'technical_debt'."
+    },
+    "performance_issues": {
+      "description": "Identify any potential performance issues in the codebase, including specific files, lines, and descriptions of the issues. Provide the details as a JSON object with keys 'performance_issues' and 'count'."
+    },
+    "complexity_hotspots": {
+      "description": "Identify any complexity hotspots in the codebase. Provide the details as a JSON object with keys 'complexity_hotspots' and 'count'."
+    },
+    "code_smells": {
+      "description": "Identify any potential code smells in the codebase, including specific files, lines, and severity where they occur. Provide the details as a JSON object with keys 'code_smells' and 'count'."
+    },
+    "outdated_dependencies": {
+      "description": "Count the number of outdated dependencies in this codebase. Provide the count as a single integer. Format your response as JSON with a single key 'outdated_dependencies'."
+    }
+  }
+}

@@ -2,6 +2,7 @@ import os
 import time
 import requests
 import json
+import logging
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -25,22 +26,44 @@ headers = {
     'Content-Type': 'application/json'
 }
 
-# Function to index the repository
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+def load_queries(filename="queries.json"):
+    """Load queries from a JSON file."""
+    try:
+        with open(filename, 'r') as file:
+            return json.load(file)['queries']
+    except Exception as e:
+        logger.error(f"Failed to load queries from {filename}: {e}")
+        raise
+
+def make_request(url, method='GET', data=None):
+    """Make an HTTP request and return the response."""
+    try:
+        if method == 'POST':
+            response = requests.post(url, json=data, headers=headers)
+        else:
+            response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        logger.error(f"HTTP request failed: {e}")
+        raise
+
 def index_repository():
+    """Index the repository."""
     url = f'{BASE_URL}/repositories'
-    response = requests.post(url, json=REPO_DETAILS, headers=headers)
-    response.raise_for_status()
-    return response.json()
+    return make_request(url, method='POST', data=REPO_DETAILS)
 
-# Function to check the indexing status
 def check_indexing_status():
+    """Check the indexing status of the repository."""
     url = f'{BASE_URL}/repositories/{REPO_ID}'
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()
-    return response.json()
+    return make_request(url)
 
-# Function to query the codebase
 def query_codebase(question):
+    """Query the codebase."""
     url = f'{BASE_URL}/query'
     data = {
         "messages": [
@@ -55,106 +78,45 @@ def query_codebase(question):
         ],
         "sessionId": "health-monitor-session"
     }
-    response = requests.post(url, json=data, headers=headers)
-    response.raise_for_status()
-    return response.json()
+    return make_request(url, method='POST', data=data)
 
-# Function to ensure the repository is indexed
 def ensure_indexed():
+    """Ensure the repository is indexed before querying."""
     status = check_indexing_status()
     if status.get('status') != 'completed':
-        print("Indexing repository...")
+        logger.info("Indexing repository...")
         index_repository()
         while True:
             time.sleep(60)  # Wait before checking again
             status = check_indexing_status()
-            print(f"Indexing status: {status.get('status')}")
+            logger.info(f"Indexing status: {status.get('status')}")
             if status.get('status') == 'completed':
                 break
-    print("Repository indexed and ready for querying.")
+    logger.info("Repository indexed and ready for querying.")
 
-# Function to extract message from the response
 def extract_message(response):
+    """Extract message from the response."""
     try:
         return response.get('message', "No message found in response.")
     except (KeyError, json.JSONDecodeError, IndexError) as e:
         return f"Error extracting message: {str(e)}"
 
-# Function to get codebase data
-def get_codebase_data():
+def get_codebase_data(queries):
+    """Get codebase data based on the provided queries."""
     ensure_indexed()
 
-    print("Querying codebase data...")
+    for key, value in queries.items():
+        logger.info(f"Querying {key.replace('_', ' ')} data...")
+        try:
+            query_result = query_codebase(value['description'])
+            logger.info(f"{key.replace('_', ' ').capitalize()} query result: {extract_message(query_result)}")
+        except Exception as e:
+            logger.error(f"Failed to query {key.replace('_', ' ')}: {e}")
 
-    # Query outdated dependencies
-    outdated_dependencies_data = query_codebase(
-        "Count the number of outdated dependencies in this codebase. "
-        "Provide the count as a single integer. "
-        "Format your response as JSON with a single key 'outdated_dependencies'."
-    )
-    print(f"Outdated dependencies query result: {extract_message(outdated_dependencies_data)}")
-    print("Completed query for outdated dependencies.")
-
-    # Query security vulnerabilities
-    security_vulnerabilities_data = query_codebase(
-        "List any security vulnerabilities found in the codebase, including the specific files and lines where they occur and the line of code. "
-        "Provide the details as a JSON object with keys 'vulnerabilities', 'file', 'line', 'code', and 'details'."
-    )
-    print(f"Security vulnerabilities query result: {extract_message(security_vulnerabilities_data)}")
-    print("Completed query for security vulnerabilities.")
-
-    # Query code smells
-    code_smells_data = query_codebase(
-        "Identify any potential code smells in the codebase, including specific files, lines, and severity where they occur. "
-        "Provide the details as a JSON object with keys 'code_smells' and 'count'."
-    )
-    print(f"Code smells query result: {extract_message(code_smells_data)}")
-    print("Completed query for code smells.")
-
-    # Query test coverage
-    test_coverage_data = query_codebase(
-        "What percentage of the codebase is covered by tests? "
-        "Provide the test coverage as a single number with two decimal places. "
-        "Format your response as JSON with a single key 'test_coverage'."
-    )
-    print(f"Test coverage query result: {extract_message(test_coverage_data)}")
-    print("Completed query for test coverage.")
-
-    # Query bugs
-    bugs_data = query_codebase(
-        "Identify any bugs in the codebase. "
-        "Provide the details as a JSON object with keys 'bugs' and 'count'."
-    )
-    print(f"Bugs query result: {extract_message(bugs_data)}")
-    print("Completed query for bugs.")
-
-    # Query technical debt
-    technical_debt_data = query_codebase(
-        "Analyze the technical debt in the codebase. "
-        "Provide the technical debt as a single number with two decimal places. "
-        "Format your response as JSON with a single key 'technical_debt'."
-    )
-    print(f"Technical debt query result: {extract_message(technical_debt_data)}")
-    print("Completed query for technical debt.")
-
-    # Query complexity hotspots
-    complexity_hotspots_data = query_codebase(
-        "Identify any complexity hotspots in the codebase. "
-        "Provide the details as a JSON object with keys 'complexity_hotspots' and 'count'."
-    )
-    print(f"Complexity hotspots query result: {extract_message(complexity_hotspots_data)}")
-    print("Completed query for complexity hotspots.")
-
-    # Query performance issues
-    performance_issues_data = query_codebase(
-        "Identify any potential performance issues in the codebase, including specific files, lines, and descriptions of the issues. "
-        "Provide the details as a JSON object with keys 'performance_issues' and 'count'."
-    )
-    print(f"Performance issues query result: {extract_message(performance_issues_data)}")
-    print("Completed query for performance issues.")
-
-def main():
-    get_codebase_data()
+def main(queries_file="queries.json"):
+    """Main function to get codebase data."""
+    queries = load_queries(queries_file)
+    get_codebase_data(queries)
 
 if __name__ == "__main__":
     main()
