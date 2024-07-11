@@ -8,16 +8,6 @@ This project is a codebase health monitoring tool that uses the Greptile API to 
 
 Maintaining a healthy codebase is crucial for the long-term success of any software project. This tool aims to automate the process of codebase health monitoring, making it easier for developers to identify and address potential issues before they become major problems. By integrating with the Greptile API and GitHub, this tool provides a comprehensive analysis of the codebase, enabling proactive maintenance and improvements.
 
-## What It Is
-
-This tool is a Python script that:
-1. Loads environment variables for API authentication.
-2. Defines constants and headers for making API requests.
-3. Loads a set of predefined queries from a JSON file.
-4. Ensures the specified GitHub repository is indexed by the Greptile API.
-5. Executes the queries against the codebase.
-6. Prints the results to the console.
-
 ## How to Run It
 
 ### Prerequisites
@@ -47,7 +37,9 @@ Ensure a `queries.json` file exists in the root directory. This file contains th
 
 Run the script with the following command:
 
+```
 python greptile_client.py
+```
 
 
 ## Next Steps
