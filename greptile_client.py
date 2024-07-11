@@ -97,15 +97,15 @@ def get_codebase_data():
 
     # Query security vulnerabilities
     security_vulnerabilities_data = query_codebase(
-        "List any security vulnerabilities found in the codebase, including the specific files and lines where they occur. "
-        "Provide the details as a JSON object with keys 'vulnerabilities', 'file', 'line', and 'count'."
+        "List any security vulnerabilities found in the codebase, including the specific files and lines where they occur and the line of code. "
+        "Provide the details as a JSON object with keys 'vulnerabilities', 'file', 'line', 'code', and 'details'."
     )
     print(f"Security vulnerabilities query result: {extract_message(security_vulnerabilities_data)}")
     print("Completed query for security vulnerabilities.")
 
     # Query code smells
     code_smells_data = query_codebase(
-        "Identify any potential code smells in the codebase, including specific files, lines, and a level of badness where they occur. "
+        "Identify any potential code smells in the codebase, including specific files, lines, and severity where they occur. "
         "Provide the details as a JSON object with keys 'code_smells' and 'count'."
     )
     print(f"Code smells query result: {extract_message(code_smells_data)}")
@@ -119,15 +119,6 @@ def get_codebase_data():
     )
     print(f"Test coverage query result: {extract_message(test_coverage_data)}")
     print("Completed query for test coverage.")
-
-    # Query documentation coverage
-    documentation_coverage_data = query_codebase(
-        "What percentage of the codebase is documented? "
-        "Provide the documentation coverage as a single number with two decimal places. "
-        "Format your response as JSON with a single key 'documentation_coverage'."
-    )
-    print(f"Documentation coverage query result: {extract_message(documentation_coverage_data)}")
-    print("Completed query for documentation coverage.")
 
     # Query bugs
     bugs_data = query_codebase(
@@ -153,6 +144,14 @@ def get_codebase_data():
     )
     print(f"Complexity hotspots query result: {extract_message(complexity_hotspots_data)}")
     print("Completed query for complexity hotspots.")
+
+    # Query performance issues
+    performance_issues_data = query_codebase(
+        "Identify any potential performance issues in the codebase, including specific files, lines, and descriptions of the issues. "
+        "Provide the details as a JSON object with keys 'performance_issues' and 'count'."
+    )
+    print(f"Performance issues query result: {extract_message(performance_issues_data)}")
+    print("Completed query for performance issues.")
 
 def main():
     get_codebase_data()
