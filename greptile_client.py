@@ -105,16 +105,24 @@ def get_codebase_data(queries):
     """Get codebase data based on the provided queries."""
     ensure_indexed()
 
+    results = {}
     for key, value in queries.items():
         logger.info(f"Querying {key.replace('_', ' ')} data...")
         try:
             query_result = query_codebase(value['description'])
-            logger.info(f"{key.replace('_', ' ').capitalize()} query result: {extract_message(query_result)}")
+            result_message = extract_message(query_result)
+            results[key] = result_message
+            logger.info(f"{key.replace('_', ' ').capitalize()} query result: {result_message}")
         except Exception as e:
             logger.error(f"Failed to query {key.replace('_', ' ')}: {e}")
+            results[key] = str(e)
+    
+    # Print the results
+    for key, result in results.items():
+        print(f"{key.replace('_', ' ').capitalize()} query result: {result}")
 
 def main(queries_file="queries.json"):
-    """Main function to get codebase data."""
+    """Main function to get codebase data and print to console."""
     queries = load_queries(queries_file)
     get_codebase_data(queries)
 
