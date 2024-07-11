@@ -52,10 +52,6 @@ python greptile_client.py
 
 ## Next Steps
 
-### Improve Error Handling
-
-Enhance the error handling mechanism to provide more detailed and specific error messages. This can be achieved by categorizing errors and using custom exceptions to handle different scenarios.
-
 ### Add More Queries
 
 Extend the functionality by adding more queries to the `queries.json` file. Examples include:
@@ -63,16 +59,16 @@ Extend the functionality by adding more queries to the `queries.json` file. Exam
 - **Code Coverage by Module**: Get test coverage metrics for individual modules. Tools: Coverage.py, PyTest.
 - **Dependency Vulnerabilities**: Check for vulnerabilities in third-party dependencies. Tools: Snyk, OWASP Dependency-Check.
 
-### Integrate with CI/CD
 
-Integrate this tool into a CI/CD pipeline to automate codebase health monitoring. This ensures that every change in the codebase is analyzed, and potential issues are reported immediately. Tools: Jenkins, GitHub Actions, GitLab CI.
+### Improve Output Format
 
-### Enhance Documentation
+Improving the output format will make the results more user-friendly and easier to analyze. Potential improvements include:
 
-Improve the documentation to cover more aspects of the tool, including detailed setup instructions, usage examples, and explanations of the different queries and their importance.
+- **HTML Reports**: Use libraries like Jinja2 or ReportLab to generate HTML reports that provide a visual representation of the codebase analysis.
+- **CSV Export**: Utilize the pandas library to export the results to a CSV file for easier analysis in spreadsheet applications.
+- **Enhanced JSON Output**: Ensure the results are available in a structured JSON format for further processing or integration with other tools.
+
 
 ### User Interface
 
 Develop a user-friendly interface to visualize the results. This can be a web dashboard or a desktop application that displays the health metrics in an easily understandable format. Tools: React, Flask, Django, Electron.
-
-These steps aim to enhance the functionality and usability of the tool while maintaining its readability and simplicity.
